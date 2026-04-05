@@ -1,34 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="card">
-    <div class="pulse-container">
-        <div class="pulse"></div>
-        <i class="fas fa-user-shield fa-4x" style="color: var(--p); position: relative; z-index: 2;"></i>
+    <div class="cam-view">
+        <video id="v" autoplay muted></video>
+        <div style="position:absolute; top:0; width:100%; height:2px; background:var(--p); box-shadow:0 0 15px var(--p); animation: s 2s linear infinite;"></div>
     </div>
-    <h2>Identity Check</h2>
-    <p id="st">Phase 2: Scanning Biometrics...</p>
-    <button id="sBtn" onclick="scan()"><i class="fas fa-camera"></i> Start Face ID</button>
+    <h2>Biometric Scan</h2>
+    <p id="t">Center your face in the frame.</p>
+    <button onclick="scan()">Start Face ID</button>
 </div>
-
-<style>
-    .pulse-container { width: 120px; height: 120px; margin: 0 auto 30px; display: flex; align-items: center; justify-content: center; position: relative; }
-    .pulse { position: absolute; width: 100%; height: 100%; border: 4px solid var(--p); border-radius: 50%; animation: pulseAni 2s infinite; }
-    @keyframes pulseAni { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
-</style>
-
+<style>@keyframes s { 0% { top: 0; } 100% { top: 100%; } }</style>
 <script>
-async function scan() {
-    const btn = document.getElementById('sBtn');
-    btn.disabled = true;
-    document.getElementById('st').innerText = "Processing Biometrics...";
-    
-    const res = await fetch('/run_face_scan', {method: 'POST'});
-    if(res.ok) window.location.href = '/home';
-    else {
-        alert("Verification Failed!");
-        btn.disabled = false;
-        document.getElementById('st').innerText = "Face not recognized. Try again.";
+    navigator.mediaDevices.getUserMedia({video:true}).then(s => document.getElementById('v').srcObject=s);
+    async function scan() {
+        document.getElementById('t').innerText = "Scanning...";
+        const res = await fetch('/run_face_scan', {method:'POST'});
+        if(res.ok) window.location.href='/home';
+        else alert("Unauthorized!");
     }
-}
 </script>
 {% endblock %}

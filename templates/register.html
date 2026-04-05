@@ -1,20 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="card">
-    <i class="fas fa-user-plus fa-3x" style="color: var(--s); margin-bottom: 20px;"></i>
+    <div class="cam-view">
+        <video id="v" autoplay muted></video>
+        <div id="flash" style="position:absolute;top:0;left:0;width:100%;height:100%;background:white;opacity:0;pointer-events:none;transition:0.1s;"></div>
+    </div>
     <h2>Register</h2>
-    <p>Webcam will capture your photo automatically.</p>
-    <input type="email" id="re" placeholder="Email">
-    <input type="password" id="rp" placeholder="Password">
-    <button onclick="reg()"><i class="fas fa-camera"></i> Register & Capture</button>
+    <div style="display:flex; gap:10px;">
+        <input type="text" id="fn" placeholder="First Name">
+        <input type="text" id="ln" placeholder="Last Name">
+    </div>
+    <input type="email" id="em" placeholder="Email">
+    <input type="password" id="pw" placeholder="Password">
+    <button id="b" onclick="reg()">Register & Capture <i class="fas fa-camera"></i></button>
 </div>
 <script>
-async function reg() {
-    let fd = new FormData();
-    fd.append('email', document.getElementById('re').value);
-    fd.append('password', document.getElementById('rp').value);
-    let res = await fetch('/register', {method: 'POST', body: fd});
-    if(res.ok) { alert("Successfully Registered!"); window.location.href='/'; }
-}
+    navigator.mediaDevices.getUserMedia({video:true}).then(s => document.getElementById('v').srcObject=s);
+    async function reg() {
+        const b = document.getElementById('b'); b.disabled = true;
+        for(let i=0; i<5; i++) {
+            document.getElementById('flash').style.opacity = '1';
+            await new Promise(r => setTimeout(r, 100));
+            document.getElementById('flash').style.opacity = '0';
+            await new Promise(r => setTimeout(r, 400));
+        }
+        let fd = new FormData();
+        fd.append('first_name', document.getElementById('fn').value);
+        fd.append('last_name', document.getElementById('ln').value);
+        fd.append('email', document.getElementById('em').value);
+        fd.append('password', document.getElementById('pw').value);
+        const res = await fetch('/register', {method:'POST', body:fd});
+        if(res.ok) window.location.href='/';
+    }
 </script>
 {% endblock %}
