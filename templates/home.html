@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <i class="fas fa-check-circle fa-5x" style="color: #4CAF50; margin-bottom: 20px;"></i>
+    <h1>Welcome!</h1>
+    <p>Identity confirmed via 2-Factor Authentication.</p>
+    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+    <button onclick="location.href='/logout'" style="background: #333;">Sign Out</button>
+</div>
+{% endblock %}

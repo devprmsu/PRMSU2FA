@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div class="pulse-container">
+        <div class="pulse"></div>
+        <i class="fas fa-user-shield fa-4x" style="color: var(--p); position: relative; z-index: 2;"></i>
+    </div>
+    <h2>Identity Check</h2>
+    <p id="st">Phase 2: Scanning Biometrics...</p>
+    <button id="sBtn" onclick="scan()"><i class="fas fa-camera"></i> Start Face ID</button>
+</div>
+
+<style>
+    .pulse-container { width: 120px; height: 120px; margin: 0 auto 30px; display: flex; align-items: center; justify-content: center; position: relative; }
+    .pulse { position: absolute; width: 100%; height: 100%; border: 4px solid var(--p); border-radius: 50%; animation: pulseAni 2s infinite; }
+    @keyframes pulseAni { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+</style>
+
+<script>
+async function scan() {
+    const btn = document.getElementById('sBtn');
+    btn.disabled = true;
+    document.getElementById('st').innerText = "Processing Biometrics...";
+    
+    const res = await fetch('/run_face_scan', {method: 'POST'});
+    if(res.ok) window.location.href = '/home';
+    else {
+        alert("Verification Failed!");
+        btn.disabled = false;
+        document.getElementById('st').innerText = "Face not recognized. Try again.";
+    }
+}
+</script>
+{% endblock %}

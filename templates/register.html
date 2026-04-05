@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <i class="fas fa-user-plus fa-3x" style="color: var(--s); margin-bottom: 20px;"></i>
+    <h2>Register</h2>
+    <p>Webcam will capture your photo automatically.</p>
+    <input type="email" id="re" placeholder="Email">
+    <input type="password" id="rp" placeholder="Password">
+    <button onclick="reg()"><i class="fas fa-camera"></i> Register & Capture</button>
+</div>
+<script>
+async function reg() {
+    let fd = new FormData();
+    fd.append('email', document.getElementById('re').value);
+    fd.append('password', document.getElementById('rp').value);
+    let res = await fetch('/register', {method: 'POST', body: fd});
+    if(res.ok) { alert("Successfully Registered!"); window.location.href='/'; }
+}
+</script>
+{% endblock %}
